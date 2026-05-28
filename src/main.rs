@@ -21,9 +21,10 @@ async fn main() {
     tracing::info!("Starting Techno Penguin server...");
     tracing::debug!("Environment variables loaded");
 
+    let db_url = std::env::var("DATABASE_URL").unwrap_or_else(|_| "sqlite:techno_penguin.db?mode=rwc".to_string());
     let pool = SqlitePoolOptions::new()
         .max_connections(5)
-        .connect("sqlite:techno_penguin.db?mode=rwc")
+        .connect(&db_url)
         .await
         .expect("Could not connect to database");
 
