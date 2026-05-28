@@ -1,11 +1,31 @@
-# Stage 1: Build
+############################################
+# Stage 1: Clone the private repo safely
+############################################
+FROM alpine/git:latest AS cloner
+
+WORKDIR /app
+
+# Mount the SSH key from your host temporarily during the build
+# RUN --mount=type=ssh mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+# RUN --mount=type=ssh git clone git@github.com:your-username/your-private-repo.git .
+
+RUN git clone https://github.com/MikeWallaceDev/penguin_site.git  .
+
+
+############################################
+# Stage 2: Build the application
+############################################
 FROM rustlang/rust:nightly-bookworm AS builder
+
+WORKDIR /app
+
+# Copy the source code strictly from the cloner stage
+COPY --from=cloner /app .
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
     pkg-config \
     libssl-dev \
-    # dart-sass \ 
     && rm -rf /var/lib/apt/lists/*
 
 # Install cargo-leptos
@@ -14,34 +34,20 @@ RUN cargo install --locked cargo-leptos
 # Install sqlx
 RUN cargo install sqlx-cli
 
-# Install Tailwind
-# RUN npm install tailwindcss
-# Install and make tailwindcss executable
-RUN curl -sLO https://github.com/tailwindlabs/tailwindcss/releases/download/v3.4.3/tailwindcss-linux-x64 \
-  && mv tailwindcss-linux-x64 tailwindcss && chmod +x tailwindcss
-
 # Add the wasm32-unknown-unknown target for hydration
 RUN rustup target add wasm32-unknown-unknown
 
-# Create data directory for SQLite
-RUN mkdir -p /app/data
-
-WORKDIR /app
-
-# Copy the project files
-COPY . .
-
-# ENV DATABASE_URL=sqlite:/app/data/techno_penguin.db?mode=rwc
-ENV DATABASE_URL=sqlite:/app/techno_penguin.db?mode=rwc
-
-RUN cargo sqlx prepare
+# RUN cargo sqlx prepare
+RUN cargo sqlx database setup
 
 # Build the application
 # Note: cargo-leptos will also handle Tailwind CSS and SASS compilation
-# RUN cargo leptos build --release -vv
-RUN cargo leptos build -vv
+RUN cargo leptos build --release -vv
 
-# Stage 2: Runtime
+
+############################################
+# Stage 3: Runtime
+############################################
 FROM debian:bookworm-slim
 
 # Install runtime dependencies
@@ -53,21 +59,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder stage
-# cargo-leptos puts the binary in target/server/release/
-# COPY --from=builder /app/target/server/release/techno_penguin /app/
-COPY --from=builder /app/target/debug/techno_penguin /app/
+COPY --from=builder /app/target/release/techno_penguin /app/
 
 # Copy the site assets
 COPY --from=builder /app/target/site /app/site
-
-# Set environment variables
-ENV LEPTOS_SITE_ADDR="0.0.0.0:3000"
-ENV LEPTOS_SITE_ROOT="site"
-ENV LEPTOS_ENV="PROD"
-ENV DATABASE_URL=sqlite:/app/data/techno_penguin.db?mode=rwc
-
-# Expose the port the app runs on
-EXPOSE 3000
 
 # Add a healthcheck (optional but recommended)
 HEALTHCHECK --interval=30s --timeout=3s \
