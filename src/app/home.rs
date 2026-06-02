@@ -1,5 +1,6 @@
 use crate::app::contact::ContactForm;
 use leptos::prelude::*;
+use leptos_fluent::tr;
 
 #[component]
 pub fn HomePage() -> impl IntoView {
@@ -19,10 +20,10 @@ fn Hero() -> impl IntoView {
 
             <div class="container px-6 mx-auto text-center">
                 <h1 class="mb-6 text-6xl font-extrabold tracking-tight md:text-7xl text-slate-900">
-                    "Expertise for the " <span class="text-amber-500">"Masses"</span>
+                    {move || tr!("hero-title")} " " <span class="text-amber-500">{move || tr!("hero-title-highlight")}</span>
                 </h1>
                 <p class="mx-auto mb-10 max-w-2xl text-xl leading-relaxed text-slate-600">
-                    "Techno Penguin delivers world-class technical services, from expert assembly to advanced training. We empower your business with reliable services."
+                    {move || tr!("hero-description")}
                 </p>
             </div>
         </section>
@@ -35,7 +36,7 @@ fn SocialProof() -> impl IntoView {
         <section class="py-16 bg-slate-50">
             <div class="container px-6 mx-auto text-center">
                 <p class="mb-10 text-sm font-bold tracking-widest uppercase text-slate-400">
-                    "Trusted by Industry Leaders"
+                    {move || tr!("social-proof-title")}
                 </p>
                 <div class="grid grid-cols-2 gap-12 items-center opacity-60 md:grid-cols-2 grayscale">
                     <div class="flex justify-center">

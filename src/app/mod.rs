@@ -2,6 +2,7 @@ pub mod app;
 pub mod assembly;
 pub mod contact;
 pub mod home;
+pub mod i18n_provider;
 pub mod training;
 pub mod tune_ups;
 

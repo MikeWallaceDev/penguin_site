@@ -1,13 +1,16 @@
 use leptos::prelude::*;
+use leptos_fluent::tr;
 
 #[component]
 pub fn AssemblyPage() -> impl IntoView {
     view! {
         <div class="container py-24 px-6 mx-auto">
-            <h1 class="mb-8 text-5xl font-extrabold text-slate-900">"Product Assembly"</h1>
+            <h1 class="mb-8 text-5xl font-extrabold text-slate-900">
+                {move || tr!("title-assembly")}
+            </h1>
 
             <p class="mb-12 max-w-3xl text-xl leading-relaxed text-slate-600">
-                "Our speciality is assembling high-end bicycles. Our precision-focused approach ensures that every component is perfectly aligned and calibrated for maximum efficiency and safety."
+                {move || tr!("assembly-description")}
             </p>
 
             <div class="overflow-hidden rounded-2xl border border-slate-200">

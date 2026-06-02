@@ -1,13 +1,16 @@
 use leptos::prelude::*;
+use leptos_fluent::tr;
 
 #[component]
 pub fn TuneUpsPage() -> impl IntoView {
     view! {
         <div class="container py-24 px-6 mx-auto">
-            <h1 class="mb-8 text-5xl font-extrabold text-slate-900">"Tune-Ups"</h1>
+            <h1 class="mb-8 text-5xl font-extrabold text-slate-900">
+                {move || tr!("tune-up-title")}
+            </h1>
 
             <p class="mb-12 max-w-3xl text-xl leading-relaxed text-slate-600">
-                "Our tune-ups are amazing."
+                {move || tr!("tune-up-description")}
             </p>
 
             <Pricing />
@@ -21,12 +24,14 @@ fn Pricing() -> impl IntoView {
         <section class="py-24 bg-white" id="pricing">
             <div class="container px-6 mx-auto">
                 <h2 class="mb-16 text-4xl font-bold text-center text-slate-800">
-                    Simple, Transparent Pricing
+                    {move || tr!("tune-up-pricing-header")}
                 </h2>
                 <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
                     // Tier 1
                     <div class="p-8 bg-white rounded-3xl border shadow-sm transition hover:shadow-md border-slate-100">
-                        <h3 class="mb-4 text-xl font-bold text-slate-800">"Silver"</h3>
+                        <h3 class="mb-4 text-xl font-bold text-slate-800">
+                            {move || tr!("tune-up-silver")}
+                        </h3>
                         <p class="mb-6 text-4xl font-black text-slate-900">"$74.99"</p>
                         <ul class="mb-8 space-y-4 text-slate-600">
                             <li>"✓ Visual Inspection"</li>
@@ -45,9 +50,11 @@ fn Pricing() -> impl IntoView {
                     // Tier 2 - Popular
                     <div class="relative p-8 bg-white rounded-3xl border-2 border-amber-500 shadow-xl transform scale-105">
                         <div class="absolute top-0 left-1/2 py-1 px-4 text-xs font-bold tracking-wider text-white uppercase bg-amber-500 rounded-full -translate-x-1/2 -translate-y-1/2">
-                            "Most Popular"
+                            {move || tr!("tune-up-most-popular")}
                         </div>
-                        <h3 class="mb-4 text-xl font-bold text-slate-800">"Gold"</h3>
+                        <h3 class="mb-4 text-xl font-bold text-slate-800">
+                            {move || tr!("tune-up-gold")}
+                        </h3>
                         <p class="mb-6 text-4xl font-black text-slate-900">"$159.99"</p>
                         <ul class="mb-8 space-y-4 text-slate-600">
                             <li>"✓ Visual Inspection"</li>
@@ -69,7 +76,10 @@ fn Pricing() -> impl IntoView {
 
                     // Tier 3
                     <div class="p-8 bg-white rounded-3xl border shadow-sm transition hover:shadow-md border-slate-100">
-                        <h3 class="mb-4 text-xl font-bold text-slate-800">"Platinum"</h3>
+                        <h3 class="mb-4 text-xl font-bold text-slate-800">
+
+                            {move || tr!("tune-up-platinum")}
+                        </h3>
                         <p class="mb-6 text-4xl font-black text-slate-900">"$319.99"</p>
                         <ul class="mb-8 space-y-4 text-slate-600">
                             <li>"✓ Visual Inspection"</li>
@@ -96,6 +106,7 @@ fn Pricing() -> impl IntoView {
         </section>
     }
 }
+
 #[component]
 fn Table() -> impl IntoView {
     view! {

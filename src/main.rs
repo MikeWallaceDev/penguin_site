@@ -5,7 +5,6 @@ async fn main() {
     use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
     use techno_penguin::app::*;
-    use techno_penguin::server::state::AppState;
     use techno_penguin::server::*;
     use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 

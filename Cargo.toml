@@ -16,31 +16,49 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 # Leptos and frontend
 leptos = { version = "0.8", features = ["nightly"] }
-leptos_router = { version = "0.8", features = ["nightly"]  }
+leptos_router = { version = "0.8", features = ["nightly"] }
 leptos_axum = { version = "0.8", optional = true }
 leptos_meta = { version = "0.8" }
+# singlestage = { version = "0.4", features = ["nightly"] }
 
 # Internet
 wasm-bindgen = { version = "=0.2.105", optional = true }
 tower = { version = "0.5", optional = true }
-tower-http = { version = "0.6", features = ["fs", "trace", "cors"], optional = true }
+tower-http = { version = "0.6", features = [
+   "fs",
+   "trace",
+   "cors",
+], optional = true }
 axum = { version = "0.8", optional = true }
 http = "1"
+
+# i18n
+leptos-fluent = "0.3"
 
 # Debug
 thiserror = "2"
 tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"], optional = true }
-tracing-wasm = {version = "0.2", optional = true }
+tracing-subscriber = { version = "0.3", features = [
+   "fmt",
+   "env-filter",
+], optional = true }
+tracing-wasm = { version = "0.2", optional = true }
 
 # Tools
-tokio = { version = "1", features = ["full", "rt-multi-thread"], optional = true }
+tokio = { version = "1", features = [
+   "full",
+   "rt-multi-thread",
+], optional = true }
 console_error_panic_hook = { version = "0.1", optional = true }
 futures = "0.3"
 
 # Database
 serde = { version = "1", features = ["derive"] }
-sqlx = { version = "0.9", features = ["sqlite", "macros", "runtime-tokio"], optional = true }
+sqlx = { version = "0.9", features = [
+   "sqlite",
+   "macros",
+   "runtime-tokio",
+], optional = true }
 
 [features]
 hydrate = [
@@ -51,16 +69,18 @@ hydrate = [
 ]
 
 ssr = [
-    "dep:axum",
-    "dep:tokio",
-    "dep:tower",
-    "dep:tower-http",
-    "dep:leptos_axum",
-    "dep:sqlx",
-    "dep:tracing-subscriber",
-    "leptos/ssr",
-    "leptos_meta/ssr",
-    "leptos_router/ssr",
+   "dep:axum",
+   "dep:tokio",
+   "dep:tower",
+   "dep:tower-http",
+   "dep:leptos_axum",
+   "dep:sqlx",
+   "dep:tracing-subscriber",
+   "leptos/ssr",
+   "leptos_meta/ssr",
+   "leptos_router/ssr",
+   "leptos-fluent/ssr",
+   "leptos-fluent/axum",
 ]
 
 # Defines a size-optimized profile for the WASM bundle in release mode
@@ -129,3 +149,5 @@ lib-features = ["hydrate"]
 #
 # Optional. Defaults to "release".
 lib-default-features = false
+
+watch-additional-files = ["locales"]
