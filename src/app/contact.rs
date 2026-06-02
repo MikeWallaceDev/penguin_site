@@ -7,6 +7,7 @@ pub mod ssr {
 
     pub fn pool() -> Result<SqlitePool, ServerFnError> {
         // use leptos_axum::extract;
+
         // In a real app, we'd use a Layer to provide the pool.
         // For simplicity here, we'll try to get it from the Axum state or a global.
         // Leptos 0.7 often uses `expect_context` or similar.
@@ -138,7 +139,7 @@ pub fn ContactForm() -> impl IntoView {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    // use super::*;
 
     #[test]
     fn test_email_validation_logic() {
