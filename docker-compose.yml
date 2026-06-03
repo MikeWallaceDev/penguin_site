@@ -3,7 +3,7 @@ name: techno_penguin
 services:
    app:
       build:
-         contaxt: .
+         context: .
          dockerfile: Dockerfile
       ports:
          - "3000:3000"
