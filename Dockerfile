@@ -10,6 +10,8 @@ RUN rustup target add wasm32-unknown-unknown
 
 RUN cargo install cargo-chef
 
+RUN cargo install cargo-generate
+
 # Install cargo-leptos
 RUN cargo install --locked cargo-leptos
 
