@@ -1,5 +1,5 @@
 # --- SHARED BASE ---
-FROM rustlang/rust:nightly-bookworm AS base
+FROM rustlang/rust:nightly-bookworm AS builder
 
 WORKDIR /app
 
@@ -34,7 +34,7 @@ RUN cargo binstall sqlx-cli
 # RUN cargo chef prepare --recipe-path recipe.json
 
 # --- BUILDER STAGE (Caches Dependencies) ---
-FROM base AS builder
+# FROM base AS builder
 
 # COPY --from=planner /app/recipe.json recipe.json
 #
@@ -50,7 +50,7 @@ RUN sqlx database create
 RUN sqlx migrate run --source ./migrations
 
 # Add the wasm32-unknown-unknown target for hydration
-RUN rustup target add wasm32-unknown-unknown
+# RUN rustup target add wasm32-unknown-unknown
 
 # Build the application
 # Note: cargo-leptos will also handle Tailwind CSS and SASS compilation
