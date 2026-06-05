@@ -5,9 +5,6 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
-# Add the wasm32-unknown-unknown target for hydration
-RUN rustup target add wasm32-unknown-unknown
-
 # Install cargo-binstall, which makes it easier to install other
 # cargo extensions like cargo-leptos
 RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz
@@ -49,8 +46,8 @@ RUN mkdir -p data
 RUN sqlx database create
 RUN sqlx migrate run --source ./migrations
 
-# Add the wasm32-unknown-unknown target for hydration
-# RUN rustup target add wasm32-unknown-unknown
+Add the wasm32-unknown-unknown target for hydration
+RUN rustup target add wasm32-unknown-unknown
 
 # Build the application
 # Note: cargo-leptos will also handle Tailwind CSS and SASS compilation
