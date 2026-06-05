@@ -46,7 +46,7 @@ RUN mkdir -p data
 RUN sqlx database create
 RUN sqlx migrate run --source ./migrations
 
-Add the wasm32-unknown-unknown target for hydration
+# Add the wasm32-unknown-unknown target for hydration
 RUN rustup target add wasm32-unknown-unknown
 
 # Build the application
