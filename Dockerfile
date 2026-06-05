@@ -14,7 +14,7 @@ RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/c
 RUN tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz
 RUN cp cargo-binstall /usr/local/cargo/bin
 
-RUN cargo binstall cargo-chef
+# RUN cargo binstall cargo-chef
 
 RUN cargo binstall cargo-generate
 
@@ -30,18 +30,18 @@ RUN rustup target add wasm32-unknown-unknown
 RUN cargo binstall sqlx-cli
 
 # --- PLANNER STAGE ---
-FROM base AS planner
-
-COPY . .
-
-RUN cargo chef prepare --recipe-path recipe.json
+# FROM base AS planner
+#
+# COPY . .
+#
+# RUN cargo chef prepare --recipe-path recipe.json
 
 # --- BUILDER STAGE (Caches Dependencies) ---
 FROM base AS builder
 
-COPY --from=planner /app/recipe.json recipe.json
-
-RUN cargo chef cook --release --recipe-path recipe.json
+# COPY --from=planner /app/recipe.json recipe.json
+#
+# RUN cargo chef cook --release --recipe-path recipe.json
 
 # Build actual source
 COPY . .
