@@ -5,18 +5,25 @@ WORKDIR /app
 
 RUN apt-get update && apt-get install -y pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
-# Add the wasm32-unknown-unknown target for hydration -MW2
-RUN rustup target add wasm32-unknown-unknown
+# Install cargo-binstall, which makes it easier to install other
+# cargo extensions like cargo-leptos
+RUN wget https://github.com/cargo-bins/cargo-binstall/releases/latest/download/cargo-binstall-x86_64-unknown-linux-musl.tgz
+RUN tar -xvf cargo-binstall-x86_64-unknown-linux-musl.tgz
+RUN cp cargo-binstall /usr/local/cargo/bin
 
-RUN cargo install cargo-chef
+RUN cargo binstall cargo-chef
 
-RUN cargo install cargo-generate
+RUN cargo binstall cargo-generate
 
 # Install cargo-leptos
-RUN cargo install --locked cargo-leptos
+# RUN cargo install --locked cargo-leptos
+RUN cargo binstall cargo-leptos -y
+
+# Add the wasm32-unknown-unknown target for hydration
+RUN rustup target add wasm32-unknown-unknown
 
 # Install sqlx
-RUN cargo install sqlx-cli
+RUN cargo binstall sqlx-cli
 
 # --- PLANNER STAGE ---
 FROM base AS planner
@@ -58,7 +65,7 @@ RUN apt-get update && apt-get install -y \
    rm -rf /var/lib/apt/lists/*
 
 # Copy the binary from the builder stage
-COPY --from=builder /app/target/release/techno_penguin /app/techno_penguin
+COPY --from=builder /app/target/release/techno_penguin /app/
 
 # If your framework (like Leptos) uses a 'site' package or assets directory, copy it here:
 COPY --from=builder /app/target/site /app/site
@@ -66,7 +73,7 @@ COPY --from=builder /app/target/site /app/site
 COPY --from=builder /app/Cargo.toml /app/
 
 ENV RUST_LOG="info"
-ENV LEPTOS_SITE_ADDR="0.0.0.0:8080"
+ENV LEPTOS_SITE_ADDR="0.0.0.0:3000"
 ENV LEPTOS_SITE_ROOT=./site
 
 # Add a healthcheck (optional but recommended)
