@@ -35,7 +35,8 @@ COPY . .
 
 # Create the database
 ENV DATABASE_URL=sqlite:/app/data/techno_penguin.db?mode=rwc
-RUN mkdir data && sqlx database create
+RUN mkdir -p data 
+RUN sqlx database create
 RUN sqlx migrate run --source ./migrations
 
 # Build the application
