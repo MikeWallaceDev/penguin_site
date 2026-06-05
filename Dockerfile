@@ -21,6 +21,10 @@ RUN cargo binstall cargo-generate
 # Install cargo-leptos
 # RUN cargo install --locked cargo-leptos
 RUN cargo binstall cargo-leptos -y
+RUN curl --proto '=https' --tlsv1.3 -LsSf https://github.com/leptos-rs/cargo-leptos/releases/latest/download/cargo-leptos-installer.sh | sh
+
+# Add the wasm32-unknown-unknown target for hydration
+RUN rustup target add wasm32-unknown-unknown
 
 # Install sqlx
 RUN cargo binstall sqlx-cli
