@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+source ~/scripts/utils.sh
+
+printMessage "Watching..."
+
+if [ -f ".env" ]; then
+   printMessage "Sourcing .env"
+   source .env
+fi
+
+cargo leptos watch
