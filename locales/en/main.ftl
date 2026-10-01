@@ -21,7 +21,7 @@ all-rights-reserved = © 2026 Techno Penguin. All rights reserved.
 # french = French
 
 # Home Page
-hero-title = Expertise for the
+hero-title = Expertise for the MW2
 hero-title-highlight = Masses
 hero-description = Techno Penguin delivers world-class technical services, from expert assembly to advanced training. We empower your business with reliable services.
 social-proof-title = Trusted by Industry Leaders
