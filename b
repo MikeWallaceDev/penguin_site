@@ -2,11 +2,31 @@
 
 source ~/scripts/utils.sh
 
-printMessage "Building..."
-
 if [ -f ".env" ]; then
-   printMessage "Sourcing .env"
    source .env
+else
+   printError "ERROR : Environment file '.env' not found."
+   printError "Exiting..."
+   exit
 fi
+
+banner $MW2_APP_NAME
+
+# $DATABASE_PATH is defined in .env
+if [ -n "$DATABASE_PATH" ]; then
+   if [ ! -f "$DATABASE_PATH" ]; then
+      printMessage "Creating database..."
+      sqlx database setup
+   else
+      printMessage "Found database : '$DATABASE_PATH'"
+   fi
+else
+   printError "ERROR : Environment variable 'DATABASE_PATH' is not defined."
+   printError "Exiting..."
+   exit
+fi
+
+printMessage "Building..."
+sleep 1
 
 cargo --verbose leptos build

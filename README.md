@@ -16,6 +16,7 @@ Make sure that the Rust toolchains and cargo-leptos are already installed
 1. `cargo install cargo-generate` - install cargo-generate binary
 1. `cargo install cargo-leptos --locked`
 1. `cargo install sqlx-cli` - this installs sqlx utility
+1. `cargo add console-error-panic-hook`
 
 ### Clone
 
