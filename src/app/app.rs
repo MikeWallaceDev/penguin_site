@@ -101,19 +101,23 @@ fn Navbar() -> impl IntoView {
         <nav class="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md border-slate-100">
             <div class="container flex justify-between items-center px-6 mx-auto h-20">
                 <a href="/" class="flex items-center space-x-2">
-                    <div class="flex justify-center items-center w-10 h-10 bg-amber-500 rounded-lg">
-                        <span class="text-xl font-black text-white">"TP"</span>
+                    <div class="flex justify-center items-center p-1 w-10 h-10 bg-white border-1 border-amber-500 rounded-lg">
+                        <img
+                            src="/penguin-logo.svg"
+                            alt="Techno Penguin"
+                            class="w-full h-full object-contain"
+                        />
                     </div>
                     <span class="text-2xl font-bold tracking-tight text-slate-900">
                         {move || tr!("brand-name")}
                     </span>
                 </a>
                 <div class="hidden items-center space-x-8 font-semibold md:flex text-slate-600">
-                    <a href="/training" class="transition hover:text-amber-500">
-                        {move || tr!("training")}
-                    </a>
                     <a href="/assembly" class="transition hover:text-amber-500">
                         {move || tr!("assembly")}
+                    </a>
+                    <a href="/training" class="transition hover:text-amber-500">
+                        {move || tr!("training")}
                     </a>
                     <a href="/tune_ups" class="transition hover:text-amber-500">
                         {move || tr!("tune-ups")}
@@ -138,8 +142,12 @@ fn Footer() -> impl IntoView {
             <div class="container grid grid-cols-1 gap-12 px-6 mx-auto md:grid-cols-4">
                 <div class="col-span-1 md:col-span-2">
                     <div class="flex items-center mb-6 space-x-2">
-                        <div class="flex justify-center items-center w-8 h-8 bg-amber-500 rounded-md">
-                            <span class="text-sm font-bold text-white">"TP"</span>
+                        <div class="flex justify-center items-center w-8 h-8 bg-white p-0.5 border-1 border-amber-500 rounded-lg">
+                            <img
+                                src="/penguin-logo.svg"
+                                alt="Techno Penguin"
+                                class="w-full h-full object-contain"
+                            />
                         </div>
                         <span class="text-xl font-bold tracking-tight text-white">
                             {move || tr!("brand-name")}
