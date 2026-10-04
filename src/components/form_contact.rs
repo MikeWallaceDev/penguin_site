@@ -1,45 +1,7 @@
 use leptos::prelude::*;
 use leptos_fluent::tr;
 
-#[cfg(feature = "ssr")]
-pub mod ssr {
-    use leptos::prelude::*;
-    use sqlx::SqlitePool;
-
-    pub fn pool() -> Result<SqlitePool, ServerFnError> {
-        // use leptos_axum::extract;
-
-        // In a real app, we'd use a Layer to provide the pool.
-        // For simplicity here, we'll try to get it from the Axum state or a global.
-        // Leptos 0.7 often uses `expect_context` or similar.
-        use crate::server::state::AppState;
-        let state = expect_context::<AppState>();
-        Ok(state.pool.clone())
-    }
-}
-
-#[server]
-pub async fn save_contact(
-    name: String,
-    email: String,
-    message: String,
-) -> Result<(), ServerFnError> {
-    let pool = ssr::pool()?;
-
-    tracing::info!("Saving contact submission from: {}", email);
-
-    sqlx::query!(
-        "INSERT INTO contact_submissions (name, email, message) VALUES (?, ?, ?)",
-        name,
-        email,
-        message
-    )
-    .execute(&pool)
-    .await
-    .map_err(|e| ServerFnError::new(format!("Database error: {}", e)))?;
-
-    Ok(())
-}
+use crate::routes::*;
 
 #[component]
 pub fn ContactForm() -> impl IntoView {
@@ -137,17 +99,5 @@ pub fn ContactForm() -> impl IntoView {
                 </div>
             </div>
         </section>
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    // use super::*;
-
-    #[test]
-    fn test_email_validation_logic() {
-        // Just a mock test to show tracing in tests
-        let email = "test@example.com";
-        assert!(email.contains('@'));
     }
 }

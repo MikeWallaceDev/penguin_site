@@ -1,0 +1,17 @@
+mod app;
+pub use app::App;
+mod form_contact;
+pub use form_contact::ContactForm;
+mod nav_bar;
+pub use nav_bar::Navbar;
+mod footer;
+pub use footer::Footer;
+mod assembly;
+mod i18n_provider;
+pub use assembly::AssemblyPage;
+mod training;
+pub use training::TrainingPage;
+mod tune_ups;
+pub use tune_ups::TuneUpsPage;
+mod home;
+pub use home::HomePage;

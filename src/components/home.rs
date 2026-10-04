@@ -1,4 +1,4 @@
-use crate::app::contact::ContactForm;
+use crate::components::*;
 use leptos::prelude::*;
 use leptos_fluent::tr;
 

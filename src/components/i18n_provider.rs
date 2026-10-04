@@ -1,7 +1,7 @@
 // https://mondeja.github.io/leptos-fluent/latest/intro.html
 
 use leptos::prelude::*;
-use leptos_fluent::leptos_fluent;
+use leptos_fluent::{leptos_fluent, I18n};
 
 #[component]
 pub fn I18nProvider(children: Children) -> impl IntoView {
@@ -92,5 +92,61 @@ pub fn I18nProvider(children: Children) -> impl IntoView {
 
         // Set initial language of the user from an URL parameter.
         initial_language_from_url_param: true,
+    }
+}
+#[component]
+pub fn Wgt_LanguageSwitcher() -> impl IntoView {
+    let i18n = expect_context::<I18n>();
+    view! {
+        <div class="flex items-center p-1 space-x-1 rounded-full border bg-slate-100 border-slate-200">
+            <button
+                class=move || {
+                    let active = i18n.language.get().id.to_string() == "en";
+                    format!(
+                        "px-3 py-1 rounded-full text-xs font-bold transition-all {}",
+                        if active {
+                            "bg-white text-slate-900 shadow-sm"
+                        } else {
+                            "text-slate-500 hover:text-slate-700"
+                        },
+                    )
+                }
+                on:click=move |_| {
+                    if let Some(target_lang) = i18n
+                        .languages
+                        .iter()
+                        .find(|l| l.id.to_string() == "en")
+                    {
+                        i18n.language.set(target_lang);
+                    }
+                }
+            >
+                "EN"
+            </button>
+            <button
+                class=move || {
+                    let active = i18n.language.get().id.to_string() == "fr";
+                    format!(
+                        "px-3 py-1 rounded-full text-xs font-bold transition-all {}",
+                        if active {
+                            "bg-white text-slate-900 shadow-sm"
+                        } else {
+                            "text-slate-500 hover:text-slate-700"
+                        },
+                    )
+                }
+                on:click=move |_| {
+                    if let Some(target_lang) = i18n
+                        .languages
+                        .iter()
+                        .find(|l| l.id.to_string() == "fr")
+                    {
+                        i18n.language.set(target_lang);
+                    }
+                }
+            >
+                "FR"
+            </button>
+        </div>
     }
 }

@@ -2,34 +2,34 @@
 #[tokio::main]
 async fn main() {
     use axum::Router;
+    use leptos::logging::log;
     use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
     use techno_penguin::app::*;
-    use techno_penguin::server::*;
-    use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+    use techno_penguin::components::App;
+    use techno_penguin::database;
 
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                "techno_penguin=debug,tower_http=debug,leptos_axum=debug".into()
-            }),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+    let tracing_sub = tracing_subscriber::fmt()
+        .with_level(true)
+        .with_max_level(tracing::Level::INFO)
+        // .init()
+        .finish();
+
+    tracing::subscriber::set_global_default(tracing_sub).expect("Failed to set subscriber");
 
     tracing::info!("Starting Techno Penguin server...");
-    tracing::debug!("Environment variables loaded");
 
     let conf = get_configuration(None).unwrap();
     let addr = conf.leptos_options.site_addr;
     let leptos_options = conf.leptos_options;
+    tracing::debug!("Environment variables loaded");
 
     // Init the pool into static
-    init_db()
+    database::init_db()
         .await
         .expect("problem during initialization of the database");
 
-    let routes = generate_route_list(app::App);
+    let routes = generate_route_list(App);
 
     // build our application with a route
     let app = Router::new()
@@ -40,35 +40,28 @@ async fn main() {
         // .fallback(leptos_axum::file_and_error_handler::<AppState, _>(shell))
         .fallback(leptos_axum::file_and_error_handler(shell))
         // .with_state(state);
+        .layer(
+            tower_http::trace::TraceLayer::new_for_http()
+                .make_span_with(
+                    tower_http::trace::DefaultMakeSpan::new().level(tracing::Level::DEBUG),
+                )
+                .on_request(tower_http::trace::DefaultOnRequest::new().level(tracing::Level::DEBUG))
+                .on_response(
+                    tower_http::trace::DefaultOnResponse::new().level(tracing::Level::DEBUG),
+                )
+                .on_failure(
+                    tower_http::trace::DefaultOnFailure::new().level(tracing::Level::DEBUG),
+                ),
+        )
         .with_state(leptos_options);
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     tracing::info!("listening on http://{}", &addr);
+    log!("listening on http://{}", &addr);
 
-    axum::serve(listener, app).await.unwrap();
-}
-
-#[cfg(feature = "ssr")]
-fn shell(options: leptos::prelude::LeptosOptions) -> impl leptos::prelude::IntoView {
-    use leptos::prelude::*;
-    use leptos_meta::MetaTags;
-    use techno_penguin::app::app::App;
-
-    view! {
-        <!DOCTYPE html>
-        <html lang="en">
-            <head>
-                <meta charset="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <AutoReload options=options.clone() />
-                <HydrationScripts options=options />
-                <MetaTags />
-            </head>
-            <body>
-                <App />
-            </body>
-        </html>
-    }
+    axum::serve(listener, app.into_make_service())
+        .await
+        .unwrap();
 }
 
 #[cfg(not(feature = "ssr"))]
