@@ -33,6 +33,7 @@ pub fn ContactForm() -> impl IntoView {
                         <div class="grid grid-cols-1 gap-6 mb-6 md:grid-cols-2">
                             <div>
                                 <label class="block mb-2 text-sm font-semibold text-slate-600">
+                                    <span class="text-red-700">* </span>
                                     {move || tr!("name")}
                                 </label>
                                 <input
@@ -45,6 +46,7 @@ pub fn ContactForm() -> impl IntoView {
                             </div>
                             <div>
                                 <label class="block mb-2 text-sm font-semibold text-slate-600">
+                                    <span class="text-red-700">* </span>
                                     {move || tr!("email")}
                                 </label>
                                 <input
@@ -58,6 +60,7 @@ pub fn ContactForm() -> impl IntoView {
                         </div>
                         <div class="mb-6">
                             <label class="block mb-2 text-sm font-semibold text-slate-600">
+                                <span class="text-red-700">* </span>
                                 {move || tr!("message")}
                             </label>
                             <textarea
