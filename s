@@ -1,1 +1,0 @@
-/home/mike/scripts/rust_serve.sh
