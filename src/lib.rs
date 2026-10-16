@@ -4,6 +4,7 @@ pub mod components;
 pub mod database;
 pub mod models;
 pub(crate) mod routes;
+pub mod validation;
 
 #[cfg(feature = "hydrate")]
 #[wasm_bindgen::prelude::wasm_bindgen]

@@ -42,6 +42,16 @@ send-message = Envoyer
 send-message-success = Merci! Nous vous contacterons bientôt.
 send-message-failure = Une erreur est survenue. Svp essayez de nouveau.
 
+# Messages de validation
+validation-name-required = Veuillez saisir votre nom.
+validation-name-too-short = Le nom doit contenir au moins 3 caractères.
+validation-name-too-long = Le nom ne doit pas dépasser 50 caractères.
+validation-email-required = Veuillez saisir votre courriel.
+validation-email-invalid = Veuillez saisir un courriel valide.
+validation-message-required = Veuillez saisir un message.
+validation-message-too-short = Le message doit contenir au moins 20 caractères.
+validation-message-too-long = Le message ne doit pas dépasser 1000 caractères.
+
 # Training Page
 training-title = Formation Professionnel
 training-description = Nos programmes de formation sont conçus pour doter votre équipe des compétences les plus récentes en assemblage technique, maintenance et optimisation des systèmes. Nous offrons une expérience pratique et une théorie complète afin que votre personnel puisse relever n'importe quel défi avec confiance.

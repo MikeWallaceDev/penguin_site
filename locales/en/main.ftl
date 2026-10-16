@@ -42,6 +42,16 @@ send-message = Send Message
 send-message-success = Thank you! We'll be in touch soon.
 send-message-failure = Something went wrong. Please try again.
 
+# Validation messages
+validation-name-required = Please enter your name.
+validation-name-too-short = Name must be at least 3 characters.
+validation-name-too-long = Name must be 50 characters or fewer.
+validation-email-required = Please enter your email address.
+validation-email-invalid = Please enter a valid email address.
+validation-message-required = Please enter a message.
+validation-message-too-short = Message must be at least 20 characters.
+validation-message-too-long = Message must be 1000 characters or fewer.
+
 # Training Page
 training-title = Expert Training
 training-description = Our training programs are designed to equip your team with the latest skills in technical assembly, maintenance, and system optimization. We provide hands-on experience and comprehensive theory to ensure your staff can handle any challenge with confidence.
