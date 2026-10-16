@@ -76,10 +76,10 @@ impl ContactSubmission {
 }
 
 impl ContactSubmission {
-    #[tracing::instrument]
+    #[tracing::instrument(skip(self))]
     #[cfg(feature = "ssr")]
     pub async fn add(&self) -> Result<(), ServerFnError> {
-        tracing::info!("Saving contact submission from: {}", self.email);
+        tracing::info!("Saving contact submission : {}", self.uuid);
 
         sqlx::query!(
             "INSERT INTO contact_submissions (uuid, name, email, message) VALUES (?, ?, ?, ?)",

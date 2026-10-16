@@ -3,6 +3,7 @@ use crate::models::ContactSubmission;
 use crate::validation::ContactResponse;
 use leptos::prelude::*;
 
+#[tracing::instrument(skip(name, email, message))]
 #[server(SaveContact, "/api")]
 pub async fn save_contact_submission(
     name: String,
@@ -12,8 +13,6 @@ pub async fn save_contact_submission(
     let name = name.trim().to_string();
     let email = email.trim().to_string();
     let message = message.trim().to_string();
-
-    tracing::info!("Saving contact submission from: {}", email);
 
     let errors = crate::validation::validate_contact(&name, &email, &message);
     if !errors.is_empty() {

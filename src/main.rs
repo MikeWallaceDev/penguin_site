@@ -2,20 +2,19 @@
 #[tokio::main]
 async fn main() {
     use axum::Router;
-    use leptos::logging::log;
     use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
     use techno_penguin::app::*;
     use techno_penguin::components::App;
     use techno_penguin::database;
+    use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-    let tracing_sub = tracing_subscriber::fmt()
-        .with_level(true)
-        .with_max_level(tracing::Level::INFO)
-        // .init()
-        .finish();
-
-    tracing::subscriber::set_global_default(tracing_sub).expect("Failed to set subscriber");
+    tracing_subscriber::registry()
+        .with(
+            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()),
+        )
+        .with(tracing_subscriber::fmt::layer())
+        .init();
 
     tracing::info!("Starting Techno Penguin server...");
 
@@ -57,7 +56,6 @@ async fn main() {
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
     tracing::info!("listening on http://{}", &addr);
-    log!("listening on http://{}", &addr);
 
     axum::serve(listener, app.into_make_service())
         .await
