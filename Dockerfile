@@ -23,6 +23,9 @@ RUN cargo binstall sqlx-cli
 
 # --- BUILDER STAGE (Caches Dependencies) ---
 
+# Try to save RAM as there is only 8 Gb on Joe's VM
+ENV CARGO_BUILD_JOBS=2
+
 # Build actual source
 COPY . .
 
