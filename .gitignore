@@ -17,3 +17,8 @@ target/
 /query.sql
 /query2.sql
 /data/
+
+# Symlinks are forbidden on Portainer
+/b
+/s
+/ww
