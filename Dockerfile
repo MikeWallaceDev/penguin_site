@@ -23,9 +23,6 @@ RUN cargo binstall sqlx-cli
 
 # --- BUILDER STAGE (Caches Dependencies) ---
 
-# Try to save RAM as there is only 8 Gb on Joe's VM
-ENV CARGO_BUILD_JOBS=2
-
 # Build actual source
 COPY . .
 
@@ -45,6 +42,10 @@ RUN cargo leptos build --release -vv
 # --- RUNTIME STAGE ---
 FROM debian:bookworm-slim AS runtime
 
+# Create a non-privileged system user for security
+# Containers should never run as 'root' in production
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y \
@@ -54,13 +55,20 @@ RUN apt-get update && apt-get install -y \
    ca-certificates && \ 
    rm -rf /var/lib/apt/lists/*
 
-# Copy the binary from the builder stage
+# Copy ONLY the compiled server binary from the builder stage
 COPY --from=builder /app/target/release/techno_penguin /app/
 
-# If your framework (like Leptos) uses a 'site' package or assets directory, copy it here:
+# Copy ONLY the optimized frontend assets (WASM, JS, CSS, Images)
 COPY --from=builder /app/target/site /app/site
 
+# Optional: If your Leptos app requires a configuration file at runtime, copy it here
 COPY --from=builder /app/Cargo.toml /app/
+
+# Secure the app directory so it is owned by our non-root user
+RUN chown -R appuser:appgroup /app
+
+# Switch away from root to the unprivileged user
+USER appuser
 
 ENV RUST_LOG="info"
 ENV LEPTOS_SITE_ADDR="0.0.0.0:3000"

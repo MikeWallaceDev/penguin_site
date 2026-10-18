@@ -30,6 +30,7 @@ tower-http = { version = "0.6", features = [
    "trace",
    "cors",
 ], optional = true }
+tower_governor = { version = "0.8", features = ["tracing", "axum"], optional = true }
 axum = { version = "0.8", optional = true }
 http = "1"
 
@@ -80,12 +81,13 @@ ssr = [
    "dep:tower-http",
    "dep:leptos_axum",
    "dep:sqlx",
-   "dep:tracing-subscriber",
-   "leptos/ssr",
-   "leptos_meta/ssr",
-   "leptos_router/ssr",
-   "leptos-fluent/ssr",
-   "leptos-fluent/axum",
+    "dep:tracing-subscriber",
+    "dep:tower_governor",
+    "leptos/ssr",
+    "leptos_meta/ssr",
+    "leptos_router/ssr",
+    "leptos-fluent/ssr",
+    "leptos-fluent/axum",
 ]
 
 # Defines a size-optimized profile for the WASM bundle in release mode

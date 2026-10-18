@@ -109,9 +109,8 @@ pub fn ContactForm() -> impl IntoView {
 
     let is_invalid = move |field: Field| field_code(field).is_some();
 
-    let is_valid = move |field: Field| {
-        touched(field) && !is_invalid(field) && !value(field).trim().is_empty()
-    };
+    let is_valid =
+        move |field: Field| touched(field) && !is_invalid(field) && !value(field).trim().is_empty();
 
     let focus_field = move |field: Field| match field {
         Field::Name => {
