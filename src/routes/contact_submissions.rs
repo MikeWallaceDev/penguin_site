@@ -2,9 +2,11 @@
 use crate::models::ContactSubmission;
 use crate::validation::ContactResponse;
 use leptos::prelude::*;
+use leptos::server_fn::codec::Json;
 
 #[tracing::instrument(skip(name, email, message))]
-#[server(SaveContact, "/api")]
+#[server(SaveContact, prefix = "/api", input = Json, endpoint = "SaveContact")]
+
 pub async fn save_contact_submission(
     name: String,
     email: String,

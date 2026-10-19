@@ -32,11 +32,11 @@ async fn main() {
         .await
         .expect("problem during initialization of the database");
 
-    // Rate limiting: 5 submissions per IP every 15 minutes
+    // Rate limiting: 5 submissions per IP every 1 minute
     // We limit server function endpoints under /api
     let governor_conf = Box::new(
         GovernorConfigBuilder::default()
-            .period(Duration::from_secs(15 * 60))
+            .period(Duration::from_secs(1 * 60))
             .burst_size(5)
             .key_extractor(PeerIpKeyExtractor)
             .finish()

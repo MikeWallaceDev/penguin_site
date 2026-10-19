@@ -81,8 +81,8 @@ ENV LEPTOS_SITE_ADDR="0.0.0.0:3000"
 ENV LEPTOS_SITE_ROOT=./site
 
 # Add a healthcheck (optional but recommended)
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:3000/ || exit 1
+HEALTHCHECK --interval=60s --timeout=3s \
+  CMD curl -f http://localhost:3000/health || exit 1
 
 EXPOSE 3000
 
