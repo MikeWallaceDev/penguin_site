@@ -44,7 +44,13 @@ FROM debian:bookworm-slim AS runtime
 
 # Create a non-privileged system user for security
 # Containers should never run as 'root' in production
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+#
+# - Create a group named pgn_grp with a Group ID of 5000
+# - Create a user name pgn_usr with an ID of 5000 and add them to the pgn_grp group
+# - Do not create a home directory for the user
+# - Do not create a group with the same name as the user
+RUN groupadd -g 5000 pgn_grp && \
+    useradd --no-create-home --no-user-group --uid 5000 --gid pgn_grp pgn_usr
 
 WORKDIR /app
 
@@ -59,16 +65,16 @@ RUN apt-get update && apt-get install -y \
 COPY --from=builder /app/target/release/techno_penguin /app/
 
 # Copy ONLY the optimized frontend assets (WASM, JS, CSS, Images)
-COPY --from=builder /app/target/site /app/site
+COPY --from=builder --chown=pgn_usr:pgn_grp /app/target/site /app/site
 
 # Optional: If your Leptos app requires a configuration file at runtime, copy it here
-COPY --from=builder /app/Cargo.toml /app/
+COPY --from=builder --chown=pgn_usr:pgn_grp /app/Cargo.toml /app/
 
 # Secure the app directory so it is owned by our non-root user
-RUN chown -R appuser:appgroup /app
+RUN chown -R pgn_usr:pgn_grp /app
 
 # Switch away from root to the unprivileged user
-USER appuser
+USER pgn_usr
 
 ENV RUST_LOG="info"
 ENV LEPTOS_SITE_ADDR="0.0.0.0:3000"
