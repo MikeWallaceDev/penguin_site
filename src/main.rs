@@ -1,6 +1,7 @@
 #[cfg(feature = "ssr")]
 #[tokio::main]
 async fn main() {
+    use axum::http::header;
     use axum::{routing::get, Router};
     use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
@@ -11,6 +12,7 @@ async fn main() {
     use tower_governor::{
         governor::GovernorConfigBuilder, key_extractor::PeerIpKeyExtractor, GovernorLayer,
     };
+    use tower_http::set_header::SetResponseHeaderLayer;
     use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
     tracing_subscriber::registry()
@@ -75,6 +77,25 @@ async fn main() {
                     tower_http::trace::DefaultOnFailure::new().level(tracing::Level::DEBUG),
                 ),
         )
+        // Prevent site from being embedded in iframes (Clickjacking)
+        .layer(SetResponseHeaderLayer::overriding(
+            header::X_FRAME_OPTIONS,
+            header::HeaderValue::from_static("DENY"),
+        ))
+        // Prevent browsers from MIME-sniffing away from the declared content-type
+        .layer(SetResponseHeaderLayer::overriding(
+            header::X_CONTENT_TYPE_OPTIONS,
+            header::HeaderValue::from_static("nosniff"),
+        ))
+        // Control referrer data sent in outgoing links
+        .layer(SetResponseHeaderLayer::overriding(
+            header::REFERRER_POLICY,
+            header::HeaderValue::from_static("strict-origin-when-cross-origin"),
+        ))
+        .layer(SetResponseHeaderLayer::overriding(
+            header::HeaderName::from_static("permissions-policy"),
+            header::HeaderValue::from_static("geolocation=(), microphone=(), camera=()"),
+        ))
         .with_state(leptos_options);
 
     let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
