@@ -85,9 +85,18 @@ docker compose up -d   # build and start the container
 
 ## Server functions (API)
 
-- Contact form POSTs to `/api/save_contact` (defined in `src/routes/contact_submissions.rs` as `#[server(SaveContact, "/api")]`).
+- Contact form POSTs to `/api/SaveContact` (defined in `src/routes/contact_submissions.rs` as `#[server(SaveContact, prefix = "/api", endpoint = "SaveContact")]`).
 - On success: renders "send-message-success" green text.
 - On error: renders "send-message-failure" red text.
+
+## Contact form notifications (email)
+
+- `src/notifications.rs` emails the site owner on each valid submission (via `lettre`, SMTP). No local mail daemon — mail is relayed by an external SMTP provider.
+- Env vars (in `.env`, passed through by `docker-compose.yml`): `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `NOTIFY_FROM`, `NOTIFY_TO`.
+- Transport security follows the port (`tls_mode_for` in `src/notifications.rs`): `465` = implicit TLS, `25` = plaintext (this site's relay), anything else = STARTTLS (default port `587`).
+- Empty `SMTP_HOST` disables notifications; the form keeps working and the skip is logged at `info` level.
+- Notification failure is logged (`error`) and never returned to the visitor, because the message is already stored.
+- Tests: `cargo test --features ssr --no-default-features` (7 tests, includes notification message building).
 
 ## Kill server (local dev)
 

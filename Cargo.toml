@@ -37,6 +37,15 @@ http = "1"
 # i18n
 leptos-fluent = "0.3"
 
+# Email (contact form notifications)
+lettre = { version = "0.11", default-features = false, features = [
+   "smtp-transport",
+   "pool",
+   "native-tls",
+   "hostname",
+   "builder",
+], optional = true }
+
 # Debug
 thiserror = "2"
 tracing = "0.1"
@@ -83,6 +92,7 @@ ssr = [
    "dep:sqlx",
     "dep:tracing-subscriber",
     "dep:tower_governor",
+    "dep:lettre",
     "leptos/ssr",
     "leptos_meta/ssr",
     "leptos_router/ssr",

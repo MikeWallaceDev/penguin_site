@@ -4,6 +4,7 @@ pub mod components;
 #[cfg(feature = "ssr")]
 pub mod database;
 pub mod models;
+pub mod notifications;
 pub(crate) mod routes;
 pub mod validation;
 
