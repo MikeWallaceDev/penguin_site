@@ -4,6 +4,7 @@ async fn main() {
    use axum::extract::DefaultBodyLimit;
    use axum::http::header;
    use axum::{Router, routing::get};
+   use dotenv::EnvLoader;
    use leptos::prelude::*;
    use leptos_axum::{LeptosRoutes, generate_route_list};
    use std::time::Duration;
@@ -15,6 +16,7 @@ async fn main() {
    };
    use tower_http::set_header::SetResponseHeaderLayer;
    use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
    tracing_subscriber::registry()
       .with(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
       .with(tracing_subscriber::fmt::layer())
@@ -22,10 +24,17 @@ async fn main() {
 
    tracing::info!("Starting Techno Penguin server...");
 
+   // Load development environtment variables from .env file
+   tracing::debug!("Loading environment variables");
+   EnvLoader::new()
+      .load()
+      .expect("Error loading environment variables");
+
+   // This reads the Leptos configuration from Cargo.toml
+   tracing::debug!("Loading Leptos environment variables");
    let conf = get_configuration(None).unwrap();
    let addr = conf.leptos_options.site_addr;
    let leptos_options = conf.leptos_options;
-   tracing::debug!("Environment variables loaded");
 
    // Init the pool into static
    database::init_db()

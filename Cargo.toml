@@ -63,6 +63,7 @@ tokio = { version = "1", features = [
 console_error_panic_hook = { version = "0.1", optional = true }
 futures = "0.3"
 chrono = { version = "0.4.41", features = ["serde"] }
+dotenv = { package = "dotenv-ng", version = "1" }
 
 # Database
 serde = { version = "1", features = ["derive"] }
@@ -140,9 +141,6 @@ reload-port = 3001
 #   browser = "chromium"
 # [Optional] The browserlist query used for optimizing the CSS.
 browserquery = "defaults"
-
-# The environment Leptos will run in, usually either "DEV" or "PROD"
-env = "DEV"
 
 # Set these to false to disable some optimization features.
 # watch = false
