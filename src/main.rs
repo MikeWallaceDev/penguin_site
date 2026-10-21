@@ -26,9 +26,7 @@ async fn main() {
 
    // Load development environtment variables from .env file
    tracing::debug!("Loading environment variables");
-   EnvLoader::new()
-      .load()
-      .expect("Error loading environment variables");
+   EnvLoader::new().load().ok();
 
    // This reads the Leptos configuration from Cargo.toml
    tracing::debug!("Loading Leptos environment variables");
