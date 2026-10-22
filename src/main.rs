@@ -10,7 +10,6 @@ async fn main() {
    use std::time::Duration;
    use techno_penguin::app::*;
    use techno_penguin::components::App;
-   use techno_penguin::database;
    use tower_governor::{
       GovernorLayer, governor::GovernorConfigBuilder, key_extractor::PeerIpKeyExtractor,
    };
@@ -34,10 +33,7 @@ async fn main() {
    let addr = conf.leptos_options.site_addr;
    let leptos_options = conf.leptos_options;
 
-   // Init the pool into static
-   database::init_db()
-      .await
-      .expect("problem during initialization of the database");
+   let db_pool = prepare_database().await;
 
    // Rate limiting: 5 submissions per IP every 1 minute
    // We limit server function endpoints under /api
@@ -58,10 +54,18 @@ async fn main() {
 
    // 2. App routes that NEED rate limiting
    let app_router = Router::new()
-      .leptos_routes(&leptos_options, leptos_routes, {
-         let leptos_options = leptos_options.clone();
-         move || shell(leptos_options.clone())
-      })
+      .leptos_routes_with_context(
+         &leptos_options,
+         leptos_routes,
+         {
+            let db_pool = db_pool.clone();
+            move || provide_context(db_pool.clone()) // Inject SQLx pool into Leptos context
+         },
+         {
+            let leptos_options = leptos_options.clone();
+            move || shell(leptos_options.clone())
+         },
+      )
       .layer(governor_layer); // layer only applies to this router
 
    // build our application with a route
@@ -108,6 +112,39 @@ async fn main() {
    )
    .await
    .unwrap();
+}
+
+#[tracing::instrument]
+#[cfg(feature = "ssr")]
+async fn prepare_database() -> sqlx::SqlitePool {
+   use sqlx::sqlite::SqliteConnectOptions;
+   use sqlx::sqlite::SqlitePoolOptions;
+   use std::str::FromStr;
+
+   tracing::info!("Creating Database Pool");
+
+   let db_url = std::env::var("DATABASE_URL").expect("No database url found in ENV vars");
+
+   let connection_options = SqliteConnectOptions::from_str(&db_url)
+      .expect("Invalid database URL")
+      .create_if_missing(true);
+
+   let pool = SqlitePoolOptions::new()
+      .max_connections(5)
+      .connect_with(connection_options)
+      .await
+      .expect("Could not connect to database");
+
+   tracing::debug!("Database connection established");
+
+   sqlx::migrate!("./migrations")
+      .run(&pool)
+      .await
+      .expect("Could not run migrations");
+
+   tracing::debug!("Migrations applied successfully");
+
+   pool
 }
 
 #[cfg(not(feature = "ssr"))]

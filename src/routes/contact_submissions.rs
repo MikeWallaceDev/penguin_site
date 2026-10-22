@@ -3,10 +3,11 @@ use crate::models::ContactSubmission;
 use crate::validation::ContactResponse;
 use leptos::prelude::*;
 use leptos::server_fn::codec::Json;
+#[cfg(feature = "ssr")]
+use sqlx::SqlitePool;
 
 #[tracing::instrument(skip(name, email, message))]
 #[server(SaveContact, prefix = "/api", input = Json, endpoint = "SaveContact")]
-
 pub async fn save_contact_submission(
    name: String,
    email: String,
@@ -27,13 +28,20 @@ pub async fn save_contact_submission(
 
    let contact_submission_add =
       ContactSubmission::new_add(name.clone(), email.clone(), message.clone());
-   contact_submission_add.add().await?;
 
-   // The message is already stored in the database, so a notification problem is logged rather
-   // than reported to the visitor as a failed submission.
-   if let Err(err) = crate::notifications::notify_new_contact(&name, &email, &message).await {
-      tracing::error!("Contact notification failed: {err}");
-   }
+   // Retrieve the SQLx pool from the Leptos context provided in main.rs
+   let pool = use_context::<SqlitePool>()
+      .ok_or_else(|| ServerFnError::new("DB Pool missing from context"))?;
+
+   contact_submission_add.add(pool).await?;
+
+   // Fire and forget: the submission is already stored in the db, so the visitor must not
+   // wait on the SMTP round-trip. The task logs any delivery problem itself.
+   tokio::spawn(async move {
+      if let Err(err) = crate::notifications::notify_new_contact(&name, &email, &message).await {
+         tracing::error!("Contact notification failed: {err}");
+      }
+   });
 
    Ok(ContactResponse::Ok)
 }

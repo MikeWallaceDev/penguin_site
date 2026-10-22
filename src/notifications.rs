@@ -33,6 +33,9 @@ const DEFAULT_TO: &str = "penguin@nopez.addy.io";
 
 /// Notifies the site owner that somebody submitted the contact form.
 ///
+/// The SMTP round-trip can take seconds, so callers should run this on a
+/// background task rather than awaiting it in the request handler.
+///
 /// Returns `Ok(())` when notifications are not configured, so an unconfigured
 /// environment keeps working exactly as before.
 #[cfg(feature = "ssr")]
@@ -155,11 +158,14 @@ fn build_message(
       sanitize_header(name)
    );
 
+   // A trailing `\` continues the literal on the next line and drops that
+   // line's leading whitespace, so this stays readable in the source while
+   // the email body keeps no indentation or markers.
    let body = format!(
-      "Received a new contact submission\n\n / 
-       Name:  {name}\n /
-       Email: {email}\n\n /
-       Message:\n{message}\n\n /
+      "Received a new contact submission\n\n\
+       Name:\n  {name}\n\
+       Email:\n {email}\n\n\
+       Message:\n{message}\n\n\
        -MIke\n"
    );
 
@@ -268,8 +274,25 @@ mod tests {
       .expect("message should build");
 
       let rendered = String::from_utf8_lossy(&mail.formatted()).to_string();
-      assert!(rendered.contains("Subject: New contact submission from Ada"));
+      // Read back the decoded header: the emoji makes the raw form an
+      // RFC2047 encoded-word.
+      let subject = mail
+         .headers()
+         .get::<lettre::message::header::Subject>()
+         .expect("message should carry a subject");
+      assert_eq!(
+         subject.as_ref(),
+         "🐧 Penguin - New contact submission from : Ada"
+      );
       assert!(rendered.contains("Reply-To: ada@example.com"), "{rendered}");
       assert!(rendered.contains("Hello there, this is fine."));
+      assert!(rendered.contains("Name:  Ada"), "{rendered}");
+      assert!(rendered.contains("-MIke"), "{rendered}");
+      // The body is written across several source lines; its layout markers
+      // and indentation must never reach the email.
+      assert!(
+         !rendered.contains(" / "),
+         "marker leaked into body: {rendered}"
+      );
    }
 }
