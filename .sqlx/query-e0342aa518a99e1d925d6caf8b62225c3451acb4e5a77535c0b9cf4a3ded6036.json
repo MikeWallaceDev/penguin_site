@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "INSERT INTO contact_submissions (uuid, name, email, message) VALUES (?, ?, ?, ?)",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 4
+    },
+    "nullable": []
+  },
+  "hash": "e0342aa518a99e1d925d6caf8b62225c3451acb4e5a77535c0b9cf4a3ded6036"
+}

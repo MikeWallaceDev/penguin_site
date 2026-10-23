@@ -1,0 +1,12 @@
+{
+  "db_name": "SQLite",
+  "query": "DELETE FROM contact_submissions WHERE uuid=$1",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Right": 1
+    },
+    "nullable": []
+  },
+  "hash": "8e09b6d29a83853b59c2eea654fcaff54e826e06420d88433558c8215602a1de"
+}

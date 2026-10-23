@@ -1,4 +1,4 @@
-source ~/scripts/utils.sh
+source "$HOME/scripts/utils.sh"
 
 PORT_NUMBER=3000
 APP_NAME="techno_penguin"
@@ -91,7 +91,7 @@ main() {
       if [ "$FOUND_APP_PID" -ne -1 ]; then
          printMessage "Found PID $FOUND_APP_PID\n"
 
-         prompt=$("Do you wish to kill it? ")
+         prompt=$(printMessage "Do you wish to kill it? ")
          read -r -n 1 -p "$prompt" yn
          yn=${yn:-n} # Default to no
          echo
